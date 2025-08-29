@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel Upload & Clean</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fb;
+      color: var(--dark);
+      line-height: 1.6;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-size: 2.5rem;
+    }
+    
+    .subtitle {
+      color: var(--gray);
+      font-size: 1.1rem;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      padding: 25px;
+      margin-bottom: 25px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+    
+    .upload-area {
+      border: 2px dashed var(--light-gray);
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      margin: 20px 0;
+      background-color: rgba(67, 97, 238, 0.05);
+      transition: all 0.3s;
+    }
+    
+    .upload-area.active {
+      border-color: var(--primary);
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+    
+    .upload-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    
+    .btn:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px);
+    }
+    
+    .btn-success {
+      background-color: #4caf50;
+    }
+    
+    .btn-success:hover {
+      background-color: #3d8b40;
+    }
+    
+    .btn-danger {
+      background-color: var(--danger);
+    }
+    
+    .btn-danger:hover {
+      background-color: #d11467;
+    }
+    
+    .btn-warning {
+      background-color: var(--warning);
+      color: var(--dark);
+    }
+    
+    .btn-warning:hover {
+      background-color: #e68a00;
+      color: white;
+    }
+    
+    .btn-info {
+      background-color: #17a2b8;
+    }
+    
+    .btn-info:hover {
+      background-color: #138496;
+    }
+    
+    .file-input {
+      display: none;
+    }
+    
+    .file-info {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+    
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    
+    .stat-box {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px;
+      text-align: center;
+      min-width: 180px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    
+    .stat-label {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+    
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 1000px;
+      max-height: 90vh;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transform: translateY(50px);
+      transition: transform 0.4s;
+    }
+    
+    .modal.active .modal-content {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--light-gray);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      max-height: 60vh;
+    }
+    
+    .modal-footer {
+      padding: 15px 20px;
+      border-top: 1px solid var(--light-gray);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background: var(--light-gray);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+    
+    .progress {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s;
+    }
+    
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      color: white;
+      opacity: 0;
+      transform: translateY(100px);
+      transition: all 0.3s;
+      z-index: 1001;
+    }
+    
+    .notification.success {
+      background: #4caf50;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .notification.error {
+      background: var(--danger);
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .party-list {
+      list-style: none;
+      margin-top: 15px;
+    }
+    
+    .party-list li {
+      padding: 8px 12px;
+      background: var(--light);
+      margin-bottom: 8px;
+      border-radius: 6px;
+      border-left: 4px solid var(--danger);
+    }
+    
+    /* Table Styles */
+    .preview-table-container {
+      overflow-x: auto;
+      margin-top: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+    }
+    
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    
+    .preview-table th {
+      background-color: var(--primary);
+      color: white;
+      padding: 10px;
+      text-align: left;
+      position: sticky;
+      top: 0;
+    }
+    
+    .preview-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .preview-table tr:nth-child(even) {
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    .preview-table tr:hover {
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+    
+    .party-group {
+      margin-bottom: 20px;
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .party-header {
+      background-color: var(--secondary);
+      color: white;
+      padding: 10px 15px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .party-totals {
+      display: flex;
+      background-color: var(--light);
+      padding: 8px 15px;
+      font-weight: bold;
+      border-top: 1px solid var(--light-gray);
+    }
+    
+    .party-totals div {
+      margin-right: 20px;
+    }
+    
+    .download-options {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    
+    @media (max-width: 768px) {
+      .stats-container {
+        flex-direction: column;
+      }
+      
+      .stat-box {
+        width: 100%;
+      }
+      
+      .modal-footer {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      
+      .preview-table {
+        font-size: 0.75rem;
+      }
+      
+      .preview-table th,
+      .preview-table td {
+        padding: 6px 8px;
+      }
+      
+      .party-header {
+        flex-direction: column;
+      }
+      
+      .download-options {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Excel Data Processor</h1>
+      <p class="subtitle">Upload, clean, and process your Excel files with ease</p>
+    </header>
+    
+    <div class="card">
+      <h2><i class="fas fa-file-upload"></i> Upload Excel File</h2>
+      <p>Supported formats: .xlsx, .xls, .csv</p>
+      
+      <form id="uploadForm">
+        <div class="upload-area" id="dropZone">
+          <div class="upload-icon">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </div>
+          <p>Drag & drop your file here or click to browse</p>
+          <input type="file" id="sheetFile" class="file-input" accept=".xlsx,.xls,.csv" required />
+          <button type="button" class="btn" id="browseBtn">Browse Files</button>
+          <div class="file-info" id="fileInfo">No file selected</div>
+        </div>
+        
+        <div class="progress-bar">
+          <div class="progress" id="progressBar"></div>
+        </div>
+        
+        <button type="submit" class="btn" id="uploadBtn">
+          <i class="fas fa-upload"></i> Process File
+        </button>
+      </form>
+    </div>
+    
+    <div class="stats-container" id="statsContainer" style="display: none;">
+      <div class="stat-box">
+        <div class="stat-value" id="totalRows">0</div>
+        <div class="stat-label">Total Rows</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="uniqueRows">0</div>
+        <div class="stat-label">Unique Rows</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="duplicateRows">0</div>
+        <div class="stat-label">Duplicates Removed</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="partyCount">0</div>
+        <div class="stat-label">Parties Processed</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal" id="confirmationModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Data Processing Complete</h3>
+        <button class="close-btn" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Your Excel file has been successfully processed. Below is a preview of the extracted data:</p>
+        
+        <div id="tablePreview"></div>
+        
+        <div class="download-options">
+          <button class="btn btn-info" id="downloadExcelBtn">
+            <i class="fas fa-file-excel"></i> Download as Excel
+          </button>
+          <button class="btn btn-warning" id="downloadCsvBtn">
+            <i class="fas fa-file-csv"></i> Download as CSV
+          </button>
+          <button class="btn btn-danger" id="downloadPdfBtn">
+            <i class="fas fa-file-pdf"></i> Download as PDF
+          </button>
+        </div>
+        
+        <div id="nonExistingParties" style="display: none;">
+          <h4 style="color: var(--danger); margin-top: 20px;">The following Party Codes do not exist:</h4>
+          <ul class="party-list" id="partyList"></ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" id="proceedBtn">
+          <i class="fas fa-check"></i> Proceed with Upload
+        </button>
+        <button class="btn btn-danger" id="cancelBtn">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="notification" id="notification"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    // Django injects party codes
+    const existingPartyCodes = {{ party_codes_list|safe }};
+
+    // 🔹 Build a lookup map for quick access (PartyCode → Phone)
+    const partyPhoneMap = {};
+    existingPartyCodes.forEach(p => {
+      partyPhoneMap[p.party_master_code] = p.phone;
+    });
+
+    const requiredColumns = [
+      "Sr No", "Salesperson", "Collection Code", "Beat Name",
+      "Party Code", "Party Name", "Bill Number", "Bill Date",
+      "Net Amount", "CRN", "DBN", "Bill Amount", "Cash",
+      "Cheque", "UPI", "RTGS", "NEFT", "IMPS",
+      "Credit Line", "TDS", "Net Adj", "O/S Amount", "In Days"
+    ];
+
+    // DOM elements
+    const dropZone = document.getElementById('dropZone');
+    const browseBtn = document.getElementById('browseBtn');
+    const fileInput = document.getElementById('sheetFile');
+    const fileInfo = document.getElementById('fileInfo');
+    const uploadForm = document.getElementById('uploadForm');
+    const progressBar = document.getElementById('progressBar');
+    const statsContainer = document.getElementById('statsContainer');
+    const totalRowsEl = document.getElementById('totalRows');
+    const uniqueRowsEl = document.getElementById('uniqueRows');
+    const duplicateRowsEl = document.getElementById('duplicateRows');
+    const partyCountEl = document.getElementById('partyCount');
+    const modal = document.getElementById('confirmationModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const proceedBtn = document.getElementById('proceedBtn');
+    const downloadExcelBtn = document.getElementById('downloadExcelBtn');
+    const downloadCsvBtn = document.getElementById('downloadCsvBtn');
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    const tablePreview = document.getElementById('tablePreview');
+    const notification = document.getElementById('notification');
+    const nonExistingParties = document.getElementById('nonExistingParties');
+    const partyList = document.getElementById('partyList');
+
+    let finalPayload = null;
+    let flattenedData = [];
+
+    // Event listeners
+    browseBtn.addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        fileInfo.textContent = `Selected file: ${e.target.files[0].name}`;
+      } else {
+        fileInfo.textContent = 'No file selected';
+      }
+    });
+
+    // Drag and drop functionality
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight() {
+      dropZone.classList.add('active');
+    }
+
+    function unhighlight() {
+      dropZone.classList.remove('active');
+    }
+
+    dropZone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      
+      if (files.length > 0) {
+        fileInput.files = files;
+        fileInfo.textContent = `Selected file: ${files[0].name}`;
+      }
+    }
+
+    // Form submission
+    uploadForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const file = fileInput.files[0];
+
+      if (!file) {
+        showNotification('Please select a file first.', 'error');
+        return;
+      }
+
+      // Show progress
+      progressBar.style.width = '30%';
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        try {
+          progressBar.style.width = '60%';
+          
+          const data = new Uint8Array(event.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+
+          const sheetData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+
+          // Find actual header row
+          let headerRowIndex = sheetData.findIndex(row =>
+            requiredColumns.every(col =>
+              row.some(cell => String(cell).trim().toLowerCase() === col.toLowerCase())
+            )
+          );
+
+          if (headerRowIndex === -1) {
+            showNotification('Could not find header row with required columns.', 'error');
+            fileInput.value = "";
+            progressBar.style.width = '0%';
+            return;
+          }
+
+          let rows = XLSX.utils.sheet_to_json(sheet, { range: headerRowIndex, defval: "" });
+
+          // Filter out "GRAND TOTAL" rows
+          rows = rows.filter(r =>
+            r["Party Code"] && !String(r["Party Code"]).toLowerCase().includes("grand")
+          );
+
+          if (rows.length === 0) {
+            showNotification('The sheet is empty after filtering.', 'error');
+            fileInput.value = "";
+            progressBar.style.width = '0%';
+            return;
+          }
+
+          // Normalize row for duplicate detection
+          function normalizeRow(row) {
+            const copy = { ...row };
+            delete copy["Sr No"];
+            Object.keys(copy).forEach(k => copy[k] = String(copy[k]).trim().toLowerCase());
+            return JSON.stringify(copy);
+          }
+
+          const seen = new Set();
+          let uniqueRows = [];
+          let duplicates = 0;
+
+          rows.forEach(row => {
+            const key = normalizeRow(row);
+            if (seen.has(key)) {
+              duplicates++;
+            } else {
+              seen.add(key);
+              uniqueRows.push(row);
+            }
+          });
+
+          // Convert Excel Date
+          function excelDateToJSDate(serial) {
+            if (typeof serial === "number") {
+              const utc_days = Math.floor(serial - 25569);
+              const utc_value = utc_days * 86400;
+              return new Date(utc_value * 1000).toISOString().split("T")[0];
+            }
+            return serial;
+          }
+          uniqueRows.forEach(r => {
+            r["Bill Date"] = excelDateToJSDate(r["Bill Date"]);
+          });
+
+          // Group by Party Code
+          const groupedData = {};
+          const notExistingPartiesSet = new Set();
+
+          uniqueRows.forEach(row => {
+            const partyKey = row["Party Code"] || row["Party Name"];
+
+            // Check if Party exists in DB
+            if (!existingPartyCodes.some(p => p.party_master_code === row["Party Code"])) {
+              notExistingPartiesSet.add(`${row["Party Code"]} - ${row["Party Name"]}`);
+            }
+
+            if (!groupedData[partyKey]) {
+              groupedData[partyKey] = {
+                PartyCode: row["Party Code"],
+                PartyName: row["Party Name"],
+                BeatName: row["Beat Name"],
+                Salesperson: row["Salesperson"],
+                phone: partyPhoneMap[row["Party Code"]] || null,   // ✅ add phone here
+                Bills: [],
+                "GRAND TOTAL": 0,
+                "TOTAL O/S": 0
+              };
+            }
+
+            groupedData[partyKey].Bills.push(row);
+            groupedData[partyKey]["GRAND TOTAL"] += Number(row["Bill Amount"]) || 0;
+            groupedData[partyKey]["TOTAL O/S"] += Number(row["O/S Amount"]) || 0;
+          });
+
+          finalPayload = Object.values(groupedData);
+          
+          // Create flattened data for Excel/CSV export
+          flattenedData = [];
+          finalPayload.forEach(party => {
+            party.Bills.forEach(bill => {
+              const flatBill = {
+                "Party Code": party.PartyCode,
+                "Party Name": party.PartyName,
+                "Phone": party.phone,
+                "Beat Name": party.BeatName,
+                "Salesperson": party.Salesperson,
+                ...bill
+              };
+              delete flatBill.Sr; // Remove Sr No if it exists
+              delete flatBill["Sr No"];
+              flattenedData.push(flatBill);
+            });
+          });
+
+          // Update stats
+          totalRowsEl.textContent = rows.length;
+          uniqueRowsEl.textContent = uniqueRows.length;
+          duplicateRowsEl.textContent = duplicates;
+          partyCountEl.textContent = finalPayload.length;
+          statsContainer.style.display = 'flex';
+
+          // If some parties do not exist in DB
+          if (notExistingPartiesSet.size > 0) {
+            partyList.innerHTML = '';
+            notExistingPartiesSet.forEach(party => {
+              const li = document.createElement('li');
+              li.textContent = party;
+              partyList.appendChild(li);
+            });
+            
+            nonExistingParties.style.display = 'block';
+            showNotification('Some party codes do not exist in the system.', 'error');
+          } else {
+            nonExistingParties.style.display = 'none';
+          }
+
+          // Show confirmation modal with table preview
+          renderTablePreview(finalPayload);
+          modal.classList.add('active');
+          
+          // Complete progress
+          progressBar.style.width = '100%';
+          setTimeout(() => {
+            progressBar.style.width = '0%';
+          }, 1000);
+
+        } catch (err) {
+          showNotification('Error processing file: ' + err.message, 'error');
+          fileInput.value = "";
+          progressBar.style.width = '0%';
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
+
+    // Function to render table preview
+    function renderTablePreview(data) {
+      tablePreview.innerHTML = '';
+      
+      if (!data || data.length === 0) {
+        tablePreview.innerHTML = '<p>No data available for preview</p>';
+        return;
+      }
+      
+      // Create a container for all party groups
+      const container = document.createElement('div');
+      
+      // For each party, create a section with its bills
+      data.forEach(party => {
+        const partyGroup = document.createElement('div');
+        partyGroup.className = 'party-group';
+        
+        // Party header
+        const header = document.createElement('div');
+        header.className = 'party-header';
+        header.innerHTML = `
+          <span>${party.PartyCode} - ${party.PartyName}</span>
+          <span>Phone: ${party.phone || 'N/A'}</span>
+        `;
+        
+        // Party totals
+        const totals = document.createElement('div');
+        totals.className = 'party-totals';
+        totals.innerHTML = `
+          <div>Grand Total: ₹${party["GRAND TOTAL"].toFixed(2)}</div>
+          <div>Total O/S: ₹${party["TOTAL O/S"].toFixed(2)}</div>
+        `;
+        
+        // Create table for bills
+        const tableContainer = document.createElement('div');
+        tableContainer.className = 'preview-table-container';
+        
+        const table = document.createElement('table');
+        table.className = 'preview-table';
+        
+        // Create table header
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        
+        if (party.Bills.length > 0) {
+          // Use the keys from the first bill as column headers
+          Object.keys(party.Bills[0]).forEach(key => {
+            if (key !== 'Sr No') { // Skip Sr No column
+              const th = document.createElement('th');
+              th.textContent = key;
+              headerRow.appendChild(th);
+            }
+          });
+        }
+        
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        
+        // Create table body
+        const tbody = document.createElement('tbody');
+        
+        party.Bills.forEach(bill => {
+          const row = document.createElement('tr');
+          
+          Object.entries(bill).forEach(([key, value]) => {
+            if (key !== 'Sr No') { // Skip Sr No column
+              const td = document.createElement('td');
+              td.textContent = value;
+              row.appendChild(td);
+            }
+          });
+          
+          tbody.appendChild(row);
+        });
+        
+        table.appendChild(tbody);
+        tableContainer.appendChild(table);
+        
+        // Assemble the party group
+        partyGroup.appendChild(header);
+        partyGroup.appendChild(tableContainer);
+        partyGroup.appendChild(totals);
+        
+        container.appendChild(partyGroup);
+      });
+      
+      tablePreview.appendChild(container);
+    }
+
+    // Function to download Excel file
+    function downloadExcel() {
+      if (flattenedData.length === 0) return;
+      
+      // Create a new workbook
+      const wb = XLSX.utils.book_new();
+      
+      // Convert JSON to worksheet
+      const ws = XLSX.utils.json_to_sheet(flattenedData);
+      
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(wb, ws, "Processed Data");
+      
+      // Generate Excel file and trigger download
+      XLSX.writeFile(wb, "processed_data.xlsx");
+      
+      showNotification('Excel file downloaded successfully!', 'success');
+    }
+
+    // Function to download CSV file
+    function downloadCsv() {
+      if (flattenedData.length === 0) return;
+      
+      // Convert JSON to CSV
+      const csv = XLSX.utils.sheet_to_csv(XLSX.utils.json_to_sheet(flattenedData));
+      
+      // Create blob and download
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute("href", url);
+      link.setAttribute("download", "processed_data.csv");
+      link.style.visibility = 'hidden';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showNotification('CSV file downloaded successfully!', 'success');
+    }
+
+    // Modal functionality
+    closeModalBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+
+    proceedBtn.addEventListener('click', function () {
+      if (!finalPayload) return;
+      
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+      this.disabled = true;
+      
+      // Get the CSRF token for Django
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      
+      const csrftoken = getCookie('csrftoken');
+      
+      // Send data to backend
+      fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ data: finalPayload })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        showNotification('Data uploaded successfully!', 'success');
+        modal.classList.remove('active');
+        this.innerHTML = '<i class="fas fa-check"></i> Proceed with Upload';
+        this.disabled = false;
+        
+        // Reset form
+        uploadForm.reset();
+        fileInfo.textContent = 'No file selected';
+        statsContainer.style.display = 'none';
+        finalPayload = null;
+        flattenedData = [];
+      })
+      .catch(error => {
+        showNotification('Error uploading data: ' + error.message, 'error');
+        this.innerHTML = '<i class="fas fa-check"></i> Proceed with Upload';
+        this.disabled = false;
+      });
+    });
+
+    // Download buttons event listeners
+    downloadExcelBtn.addEventListener('click', function() {
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+      this.disabled = true;
+      
+      setTimeout(() => {
+        downloadExcel();
+        this.innerHTML = '<i class="fas fa-file-excel"></i> Download as Excel';
+        this.disabled = false;
+      }, 500);
+    });
+
+    downloadCsvBtn.addEventListener('click', function() {
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+      this.disabled = true;
+      
+      setTimeout(() => {
+        downloadCsv();
+        this.innerHTML = '<i class="fas fa-file-csv"></i> Download as CSV';
+        this.disabled = false;
+      }, 500);
+    });
+
+    downloadPdfBtn.addEventListener('click', function () {
+      if (!finalPayload) return;
+      
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+      this.disabled = true;
+      
+      setTimeout(() => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Add title
+        doc.setFontSize(18);
+        doc.setTextColor(40, 40, 40);
+        doc.text("Processed Excel Data", 105, 15, { align: 'center' });
+        
+        // Add metadata
+        doc.setFontSize(12);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 25, { align: 'center' });
+        
+        // Add content
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        
+        const content = JSON.stringify(finalPayload, null, 2);
+        const lines = doc.splitTextToSize(content, 180);
+        
+        doc.text(lines, 10, 35);
+        
+        // Add page numbers
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+          doc.setPage(i);
+          doc.setFontSize(10);
+          doc.setTextColor(150, 150, 150);
+          doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
+        }
+        
+        doc.save("processed_data.pdf");
+        
+        this.innerHTML = '<i class="fas fa-file-pdf"></i> Download as PDF';
+        this.disabled = false;
+        
+        showNotification('PDF downloaded successfully!', 'success');
+      }, 500);
+    });
+
+    // Notification function
+    function showNotification(message, type) {
+      notification.textContent = message;
+      notification.className = 'notification ' + type;
+      
+      setTimeout(() => {
+        notification.className = 'notification';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
