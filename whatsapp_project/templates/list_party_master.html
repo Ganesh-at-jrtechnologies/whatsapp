@@ -1,457 +1,505 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Party Master Codes</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary: #4361ee;
-      --secondary: #3f37c9;
-      --success: #4cc9f0;
-      --danger: #f72585;
-      --warning: #f8961e;
-      --light: #f8f9fa;
-      --dark: #212529;
-      --gray: #6c757d;
-      --light-gray: #e9ecef;
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    
-    body {
-      background-color: #f5f7fb;
-      color: var(--dark);
-      line-height: 1.6;
-      padding: 20px;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    
-    h1 {
-      color: var(--primary);
-      margin-bottom: 10px;
-      font-size: 2.5rem;
-    }
-    
-    .subtitle {
-      color: var(--gray);
-      font-size: 1.1rem;
-    }
-    
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-      padding: 25px;
-      margin-bottom: 25px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    }
-    
-    .search-container {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    
-    .search-box {
-      flex: 1;
-      position: relative;
-      min-width: 250px;
-    }
-    
-    .search-box input {
-      width: 100%;
-      padding: 12px 15px 12px 45px;
-      border: 1px solid var(--light-gray);
-      border-radius: 6px;
-      font-size: 1rem;
-      transition: all 0.3s;
-    }
-    
-    .search-box input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-    }
-    
-    .search-icon {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-    }
-    
-    .filter-select {
-      padding: 12px 15px;
-      border: 1px solid var(--light-gray);
-      border-radius: 6px;
-      font-size: 1rem;
-      background-color: white;
-      min-width: 180px;
-    }
-    
-    .stats-container {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      margin: 20px 0;
-    }
-    
-    .stat-box {
-      background: white;
-      border-radius: 8px;
-      padding: 15px;
-      margin: 10px;
-      text-align: center;
-      min-width: 180px;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-    }
-    
-    .stat-value {
-      font-size: 2rem;
-      font-weight: bold;
-      color: var(--primary);
-    }
-    
-    .stat-label {
-      color: var(--gray);
-      font-size: 0.9rem;
-    }
-    
-    .table-container {
-      overflow-x: auto;
-      margin-top: 20px;
-      border: 1px solid var(--light-gray);
-      border-radius: 8px;
-      background: white;
-    }
-    
-    .party-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    .party-table th {
-      background-color: var(--primary);
-      color: white;
-      padding: 15px;
-      text-align: left;
-      position: sticky;
-      top: 0;
-      cursor: pointer;
-    }
-    
-    .party-table th:hover {
-      background-color: var(--secondary);
-    }
-    
-    .party-table td {
-      padding: 12px 15px;
-      border-bottom: 1px solid var(--light-gray);
-    }
-    
-    .party-table tr:nth-child(even) {
-      background-color: rgba(67, 97, 238, 0.05);
-    }
-    
-    .party-table tr:hover {
-      background-color: rgba(67, 97, 238, 0.1);
-    }
-    
-    .pagination {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-      gap: 10px;
-    }
-    
-    .pagination button {
-      padding: 8px 15px;
-      background-color: white;
-      border: 1px solid var(--light-gray);
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    
-    .pagination button:hover {
-      background-color: var(--primary);
-      color: white;
-    }
-    
-    .pagination button.active {
-      background-color: var(--primary);
-      color: white;
-    }
-    
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      justify-content: flex-end;
-    }
-    
-    .btn {
-      display: inline-block;
-      padding: 12px 24px;
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: 600;
-      transition: all 0.3s;
-      text-align: center;
-    }
-    
-    .btn:hover {
-      background-color: var(--secondary);
-      transform: translateY(-2px);
-    }
-    
-    .btn-success {
-      background-color: #4caf50;
-    }
-    
-    .btn-success:hover {
-      background-color: #3d8b40;
-    }
-    
-    .btn-danger {
-      background-color: var(--danger);
-    }
-    
-    .btn-danger:hover {
-      background-color: #d11467;
-    }
-    
-    .notification {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 15px 20px;
-      border-radius: 8px;
-      color: white;
-      opacity: 0;
-      transform: translateY(100px);
-      transition: all 0.3s;
-      z-index: 1001;
-      max-width: 350px;
-    }
-    
-    .notification.success {
-      background: #4caf50;
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    .notification.error {
-      background: var(--danger);
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: var(--gray);
-    }
-    
-    .empty-state i {
-      font-size: 3rem;
-      margin-bottom: 15px;
-      color: var(--light-gray);
-    }
-    
-    @media (max-width: 768px) {
-      .search-container {
-        flex-direction: column;
-      }
-      
-      .filter-select {
-        width: 100%;
-      }
-      
-      .stats-container {
-        flex-direction: column;
-      }
-      
-      .stat-box {
-        width: 100%;
-      }
-      
-      .party-table {
-        font-size: 0.85rem;
-      }
-      
-      .party-table th,
-      .party-table td {
-        padding: 10px 12px;
-      }
-      
-      .action-buttons {
-        flex-direction: column;
-      }
-      
-      .btn {
-        width: 100%;
-      }
-    }
-  </style>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Materia - Admin Template">
+    <meta name="keywords" content="materia, webapp, admin, dashboard, template, ui">
+    <meta name="author" content="solutionportal">
+    <!-- <base href="/"> -->
+
+    <title>Party Master List</title>
+
+    <link rel="icon" type="image/x-icon" href="{% static 'images/ksb_logo.png' %}">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="{% static 'fonts/ionicons/css/ionicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome/css/font-awesome.min.css' %}">
+
+    <!-- Plugins -->
+    <link rel="stylesheet" href="{% static 'styles/plugins/waves.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/plugins/perfect-scrollbar.css' %}">
+
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/main.min.css' %}">
+
+
+
+
+
+
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css'>
+
+    <!-- Match Media polyfill for IE9 -->
+    <!--[if IE 9]> <script src="scripts/ie/matchMedia.js"></script>  <![endif]-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
 </head>
-<body>
-  <div class="container">
-    <header>
-      <h1><i class="fas fa-list-alt"></i> Party Master Codes</h1>
-      <p class="subtitle">View and manage all existing party master codes</p>
-    </header>
-    
-    <div class="card">
-      <div class="search-container">
-        <div class="search-box">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" id="searchInput" placeholder="Search party codes or names...">
-        </div>
-        <select class="filter-select" id="filterSelect">
-          <option value="all">All Records</option>
-          <option value="D-P">D-P Codes</option>
-          <option value="P">P Codes</option>
-        </select>
-        <button class="btn" id="refreshBtn">
-          <i class="fas fa-sync-alt"></i> Refresh
-        </button>
-      </div>
-      
-      <div class="stats-container">
-        <div class="stat-box">
-          <div class="stat-value" id="totalCount">0</div>
-          <div class="stat-label">Total Codes</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value" id="filteredCount">0</div>
-          <div class="stat-label">Filtered Codes</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value" id="dpCount">0</div>
-          <div class="stat-label">D-P Codes</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value" id="pCount">0</div>
-          <div class="stat-label">P Codes</div>
-        </div>
-      </div>
-      
-      <div class="table-container">
-        <table class="party-table">
-          <thead>
-            <tr>
-              <th data-sort="code">Party Code <i class="fas fa-sort"></i></th>
-              <th data-sort="name">Party Name <i class="fas fa-sort"></i></th>
-              <th data-sort="phone">Phone Number <i class="fas fa-sort"></i></th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="partyTableBody">
-            <!-- Table content will be populated by JavaScript -->
-          </tbody>
-        </table>
-      </div>
-      
-      <div class="pagination" id="pagination">
-        <!-- Pagination will be populated by JavaScript -->
-      </div>
-      
-      <div class="action-buttons">
-        <button class="btn btn-success" id="exportExcelBtn">
-          <i class="fas fa-file-excel"></i> Export to Excel
-        </button>
-        <button class="btn btn-danger" id="exportPdfBtn">
-          <i class="fas fa-file-pdf"></i> Export to PDF
-        </button>
-      </div>
-    </div>
-  </div>
-  
-  <div class="notification" id="notification"></div>
 
-  <script>
-    // Sample data - In a real application, this would come from your backend
-    const existingPartyCodes = {{ party_codes_list|safe }};
+<body id="app" class="app off-canvas">
 
-    // DOM elements
-    const searchInput = document.getElementById('searchInput');
-    const filterSelect = document.getElementById('filterSelect');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const totalCountEl = document.getElementById('totalCount');
-    const filteredCountEl = document.getElementById('filteredCount');
-    const dpCountEl = document.getElementById('dpCount');
-    const pCountEl = document.getElementById('pCount');
-    const partyTableBody = document.getElementById('partyTableBody');
-    const paginationEl = document.getElementById('pagination');
-    const exportExcelBtn = document.getElementById('exportExcelBtn');
-    const exportPdfBtn = document.getElementById('exportPdfBtn');
-    const notification = document.getElementById('notification');
+    <!-- header -->
+    {% include "includes/header.html" %}
+    <!-- #end header -->
 
-    // State variables
-    let currentPage = 1;
-    const itemsPerPage = 5;
-    let sortField = 'code';
-    let sortDirection = 'asc';
-    let filteredData = [...existingPartyCodes];
+    <!-- main-container -->
+    <div class="main-container clearfix">
+        <!-- main-navigation -->
+        {% include "includes/side_navbar.html" %}
+        <!-- #end main-navigation -->
 
-    // Initialize the page
-    function init() {
-      updateStats();
-      renderTable();
-      setupPagination();
-      setupEventListeners();
-    }
+        <div class="content-container fixedHeader nav-expand">
 
-    // Update statistics
-    function updateStats() {
-      const total = existingPartyCodes.length;
-      const filtered = filteredData.length;
-      const dpCodes = existingPartyCodes.filter(item => item.party_master_code.startsWith('D-P')).length;
-      const pCodes = existingPartyCodes.filter(item => item.party_master_code.startsWith('P') && !item.party_master_code.startsWith('D-P')).length;
-      
-      totalCountEl.textContent = total;
-      filteredCountEl.textContent = filtered;
-      dpCountEl.textContent = dpCodes;
-      pCountEl.textContent = pCodes;
-    }
+            <style>
+                :root {
+                    --primary: #4361ee;
+                    --secondary: #3f37c9;
+                    --success: #4cc9f0;
+                    --danger: #f72585;
+                    --warning: #f8961e;
+                    --light: #f8f9fa;
+                    --dark: #212529;
+                    --gray: #6c757d;
+                    --light-gray: #e9ecef;
+                }
 
-    // Render the table with current data
-    function renderTable() {
-      // Clear existing table content
-      partyTableBody.innerHTML = '';
-      
-      if (filteredData.length === 0) {
-        const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = `
+                * {
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: 0;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+
+                body {
+                    background-color: #f5f7fb;
+                    color: var(--dark);
+                    line-height: 1.6;
+                    {% comment %} padding: 20px; {% endcomment %}
+                }
+
+                .container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                header {
+                    text-align: center;
+                    margin-bottom: 30px;
+                }
+
+                h1 {
+                    color: var(--primary);
+                    margin-bottom: 10px;
+                    font-size: 2.5rem;
+                }
+
+                .subtitle {
+                    color: var(--gray);
+                    font-size: 2rem;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                    padding: 25px;
+                    margin-bottom: 25px;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+
+                .card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+                }
+
+                .search-container {
+                    display: flex;
+                    gap: 15px;
+                    margin-bottom: 20px;
+                    flex-wrap: wrap;
+                }
+
+                .search-box {
+                    flex: 1;
+                    position: relative;
+                    min-width: 250px;
+                }
+
+                .search-box input {
+                    width: 100%;
+                    padding: 12px 15px 12px 45px;
+                    border: 1px solid var(--light-gray);
+                    border-radius: 6px;
+                    font-size: 1.5rem;
+                    transition: all 0.3s;
+                }
+
+                .search-box input:focus {
+                    outline: none;
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+                }
+
+                .search-icon {
+                    position: absolute;
+                    left: 15px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: var(--gray);
+                }
+
+                .filter-select {
+                    padding: 12px 15px;
+                    border: 1px solid var(--light-gray);
+                    border-radius: 6px;
+                    font-size: 1.4rem;
+                    background-color: white;
+                    min-width: 180px;
+                }
+
+                .stats-container {
+                    display: flex;
+                    justify-content: space-around;
+                    flex-wrap: wrap;
+                    margin: 20px 0;
+                }
+
+                .stat-box {
+                    background: white;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin: 10px;
+                    text-align: center;
+                    min-width: 180px;
+                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+                }
+
+                .stat-value {
+                    font-size: 3rem;
+                    font-weight: bold;
+                    color: var(--primary);
+                }
+
+                .stat-label {
+                    color: var(--gray);
+                    font-size: 1.3rem;
+                }
+
+                .table-container {
+                    overflow-x: auto;
+                    margin-top: 20px;
+                    border: 1px solid var(--light-gray);
+                    border-radius: 8px;
+                    background: white;
+                }
+
+                .party-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+
+                .party-table th {
+                    background-color: var(--primary);
+                    color: white;
+                    padding: 15px;
+                    text-align: left;
+                    position: sticky;
+                    top: 0;
+                    cursor: pointer;
+                }
+
+                .party-table th:hover {
+                    background-color: var(--secondary);
+                }
+
+                .party-table td {
+                    padding: 12px 15px;
+                    border-bottom: 1px solid var(--light-gray);
+                }
+
+                .party-table tr:nth-child(even) {
+                    background-color: rgba(67, 97, 238, 0.05);
+                }
+
+                .party-table tr:hover {
+                    background-color: rgba(67, 97, 238, 0.1);
+                }
+
+                .pagination {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 20px;
+                    gap: 10px;
+                }
+
+                .pagination button {
+                    padding: 8px 15px;
+                    background-color: white;
+                    border: 1px solid var(--light-gray);
+                    border-radius: 6px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                }
+
+                .pagination button:hover {
+                    background-color: var(--primary);
+                    color: white;
+                }
+
+                .pagination button.active {
+                    background-color: var(--primary);
+                    color: white;
+                }
+
+                .action-buttons {
+                    display: flex;
+                    gap: 10px;
+                    margin-top: 20px;
+                    justify-content: flex-end;
+                }
+
+                .btn {
+                    display: inline-block;
+                    padding: 12px 24px;
+                    background-color: var(--primary);
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    transition: all 0.3s;
+                    text-align: center;
+                }
+
+                .btn:hover {
+                    background-color: var(--secondary);
+                    transform: translateY(-2px);
+                }
+
+                .btn-success {
+                    background-color: #4caf50;
+                }
+
+                .btn-success:hover {
+                    background-color: #3d8b40;
+                }
+
+                .btn-danger {
+                    background-color: var(--danger);
+                }
+
+                .btn-danger:hover {
+                    background-color: #d11467;
+                }
+
+                .notification {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    color: white;
+                    opacity: 0;
+                    transform: translateY(100px);
+                    transition: all 0.3s;
+                    z-index: 1001;
+                    max-width: 350px;
+                }
+
+                .notification.success {
+                    background: #4caf50;
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                .notification.error {
+                    background: var(--danger);
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                .empty-state {
+                    text-align: center;
+                    padding: 40px;
+                    color: var(--gray);
+                }
+
+                .empty-state i {
+                    font-size: 3rem;
+                    margin-bottom: 15px;
+                    color: var(--light-gray);
+                }
+
+                @media (max-width: 768px) {
+                    .search-container {
+                        flex-direction: column;
+                    }
+
+                    .filter-select {
+                        width: 100%;
+                    }
+
+                    .stats-container {
+                        flex-direction: column;
+                    }
+
+                    .stat-box {
+                        width: 100%;
+                    }
+
+                    .party-table {
+                        font-size: 1.5rem;
+                    }
+
+                    .party-table th,
+                    .party-table td {
+                        padding: 10px 12px;
+                    }
+
+                    .action-buttons {
+                        flex-direction: column;
+                    }
+
+                    .btn {
+                        width: 100%;
+                    }
+                }
+            </style>
+            <div class="container">
+                <header >
+                    <h1 style="font-size: 36px;"><i class="fas fa-list-alt"></i> Party Master List</h1>
+                    <p class="subtitle">View and manage all existing party master codes</p>
+                </header>
+
+                <div class="card">
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="searchInput" placeholder="Search party codes or names...">
+                        </div>
+                        <select class="filter-select" id="filterSelect">
+                            <option value="all">All Records</option>
+                            <option value="D-P">D-P Codes</option>
+                            <option value="P">P Codes</option>
+                        </select>
+                        <button class="btn" id="refreshBtn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-value" id="totalCount">0</div>
+                            <div class="stat-label">Total Codes</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="filteredCount">0</div>
+                            <div class="stat-label">Filtered Codes</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="dpCount">0</div>
+                            <div class="stat-label">D-P Codes</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="pCount">0</div>
+                            <div class="stat-label">P Codes</div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="party-table">
+                            <thead>
+                                <tr>
+                                    <th data-sort="code">Party Code <i class="fas fa-sort"></i></th>
+                                    <th data-sort="name">Party Name <i class="fas fa-sort"></i></th>
+                                    <th data-sort="phone">Phone Number <i class="fas fa-sort"></i></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="partyTableBody">
+                                <!-- Table content will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination will be populated by JavaScript -->
+                    </div>
+
+                    <!--<div class="action-buttons">
+                        <button class="btn btn-success" id="exportExcelBtn">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </button>
+                        <button class="btn btn-danger" id="exportPdfBtn">
+                            <i class="fas fa-file-pdf"></i> Export to PDF
+                        </button>
+                    </div>-->
+                </div>
+            </div>
+
+            <div class="notification" id="notification"></div>
+
+            <script>
+                // Sample data - In a real application, this would come from your backend
+                const existingPartyCodes = {{ party_codes_list| safe }};
+
+                // DOM elements
+                const searchInput = document.getElementById('searchInput');
+                const filterSelect = document.getElementById('filterSelect');
+                const refreshBtn = document.getElementById('refreshBtn');
+                const totalCountEl = document.getElementById('totalCount');
+                const filteredCountEl = document.getElementById('filteredCount');
+                const dpCountEl = document.getElementById('dpCount');
+                const pCountEl = document.getElementById('pCount');
+                const partyTableBody = document.getElementById('partyTableBody');
+                const paginationEl = document.getElementById('pagination');
+                const exportExcelBtn = document.getElementById('exportExcelBtn');
+                const exportPdfBtn = document.getElementById('exportPdfBtn');
+                const notification = document.getElementById('notification');
+
+                // State variables
+                let currentPage = 1;
+                const itemsPerPage = 5;
+                let sortField = 'code';
+                let sortDirection = 'asc';
+                let filteredData = [...existingPartyCodes];
+
+                // Initialize the page
+                function init() {
+                    updateStats();
+                    renderTable();
+                    setupPagination();
+                    setupEventListeners();
+                }
+
+                // Update statistics
+                function updateStats() {
+                    const total = existingPartyCodes.length;
+                    const filtered = filteredData.length;
+                    const dpCodes = existingPartyCodes.filter(item => item.party_master_code.startsWith('D-P')).length;
+                    const pCodes = existingPartyCodes.filter(item => item.party_master_code.startsWith('P') && !item.party_master_code.startsWith('D-P')).length;
+
+                    totalCountEl.textContent = total;
+                    filteredCountEl.textContent = filtered;
+                    dpCountEl.textContent = dpCodes;
+                    pCountEl.textContent = pCodes;
+                }
+
+                // Render the table with current data
+                function renderTable() {
+                    // Clear existing table content
+                    partyTableBody.innerHTML = '';
+
+                    if (filteredData.length === 0) {
+                        const emptyRow = document.createElement('tr');
+                        emptyRow.innerHTML = `
           <td colspan="4">
             <div class="empty-state">
               <i class="fas fa-inbox"></i>
@@ -460,210 +508,291 @@
             </div>
           </td>
         `;
-        partyTableBody.appendChild(emptyRow);
-        return;
-      }
-      
-      // Calculate pagination
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
-      const pageData = filteredData.slice(startIndex, endIndex);
-      
-      // Populate table with data
-      pageData.forEach(party => {
-        const row = document.createElement('tr');
-        
-        row.innerHTML = `
+                        partyTableBody.appendChild(emptyRow);
+                        return;
+                    }
+
+                    // Calculate pagination
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+                    const pageData = filteredData.slice(startIndex, endIndex);
+
+                    // Populate table with data
+                    pageData.forEach(party => {
+                        const row = document.createElement('tr');
+
+                        row.innerHTML = `
           <td>${party.party_master_code}</td>
           <td>${party.party_name || 'N/A'}</td>
           <td>${party.phone}</td>
           <td>
-            <button class="btn" onclick="viewParty('${party.party_master_code}')">
-              <i class="fas fa-eye"></i> View
+            <button class="btn" onclick="editParty('${party.party_master_code}')">
+              <i class="fas fa-pencil"></i> Edit
             </button>
           </td>
         `;
-        
-        partyTableBody.appendChild(row);
-      });
-    }
 
-    // Set up pagination controls
-    function setupPagination() {
-      const pageCount = Math.ceil(filteredData.length / itemsPerPage);
-      
-      // Clear existing pagination
-      paginationEl.innerHTML = '';
-      
-      if (pageCount <= 1) return;
-      
-      // Previous button
-      const prevButton = document.createElement('button');
-      prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
-      prevButton.disabled = currentPage === 1;
-      prevButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-          currentPage--;
-          renderTable();
-          setupPagination();
-        }
-      });
-      paginationEl.appendChild(prevButton);
-      
-      // Page buttons
-      for (let i = 1; i <= pageCount; i++) {
-        const pageButton = document.createElement('button');
-        pageButton.textContent = i;
-        pageButton.classList.toggle('active', i === currentPage);
-        pageButton.addEventListener('click', () => {
-          currentPage = i;
-          renderTable();
-          setupPagination();
-        });
-        paginationEl.appendChild(pageButton);
-      }
-      
-      // Next button
-      const nextButton = document.createElement('button');
-      nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
-      nextButton.disabled = currentPage === pageCount;
-      nextButton.addEventListener('click', () => {
-        if (currentPage < pageCount) {
-          currentPage++;
-          renderTable();
-          setupPagination();
-        }
-      });
-      paginationEl.appendChild(nextButton);
-    }
+                        partyTableBody.appendChild(row);
+                    });
+                }
 
-    // Filter data based on search and filter criteria
-    function filterData() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const filterValue = filterSelect.value;
-      
-      filteredData = existingPartyCodes.filter(party => {
-        // Apply search filter
-        const matchesSearch = searchTerm === '' || 
-          party.party_master_code.toLowerCase().includes(searchTerm) ||
-          (party.party_name && party.party_name.toLowerCase().includes(searchTerm)) ||
-          party.phone.includes(searchTerm);
-        
-        // Apply type filter
-        let matchesFilter = true;
-        if (filterValue === 'D-P') {
-          matchesFilter = party.party_master_code.startsWith('D-P');
-        } else if (filterValue === 'P') {
-          matchesFilter = party.party_master_code.startsWith('P') && !party.party_master_code.startsWith('D-P');
-        }
-        
-        return matchesSearch && matchesFilter;
-      });
-      
-      // Reset to first page when filtering
-      currentPage = 1;
-      
-      // Update UI
-      updateStats();
-      renderTable();
-      setupPagination();
-    }
+                // Set up pagination controls
+                function setupPagination() {
+                    const pageCount = Math.ceil(filteredData.length / itemsPerPage);
 
-    // Sort data by specified field
-    function sortData(field) {
-      if (sortField === field) {
-        // Toggle sort direction if same field
-        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-      } else {
-        // Default to ascending when changing field
-        sortField = field;
-        sortDirection = 'asc';
-      }
-      
-      filteredData.sort((a, b) => {
-        let valueA, valueB;
-        
-        switch (field) {
-          case 'code':
-            valueA = a.party_master_code;
-            valueB = b.party_master_code;
-            break;
-          case 'name':
-            valueA = a.party_name || '';
-            valueB = b.party_name || '';
-            break;
-          case 'phone':
-            valueA = a.phone;
-            valueB = b.phone;
-            break;
-          default:
-            valueA = a.party_master_code;
-            valueB = b.party_master_code;
-        }
-        
-        // Compare values
-        if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
-        if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
-        return 0;
-      });
-      
-      renderTable();
-    }
+                    // Clear existing pagination
+                    paginationEl.innerHTML = '';
 
-    // Set up event listeners
-    function setupEventListeners() {
-      searchInput.addEventListener('input', filterData);
-      filterSelect.addEventListener('change', filterData);
-      refreshBtn.addEventListener('click', () => {
-        searchInput.value = '';
-        filterSelect.value = 'all';
-        filterData();
-        showNotification('Data refreshed successfully', 'success');
-      });
-      
-      // Table header sorting
-      document.querySelectorAll('th[data-sort]').forEach(header => {
-        header.addEventListener('click', () => {
-          const field = header.getAttribute('data-sort');
-          sortData(field);
-        });
-      });
-      
-      // Export buttons
-      exportExcelBtn.addEventListener('click', exportToExcel);
-      exportPdfBtn.addEventListener('click', exportToPDF);
-    }
+                    if (pageCount <= 1) return;
 
-    // View party details (placeholder function)
-    function viewParty(partyCode) {
-      showNotification(`Viewing details for ${partyCode}`, 'success');
-      // In a real application, this would navigate to a detail page or show a modal
-    }
+                    // Previous button
+                    const prevButton = document.createElement('button');
+                    prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                    prevButton.disabled = currentPage === 1;
+                    prevButton.addEventListener('click', () => {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            renderTable();
+                            setupPagination();
+                        }
+                    });
+                    paginationEl.appendChild(prevButton);
 
-    // Export to Excel (placeholder function)
-    function exportToExcel() {
-      showNotification('Exporting to Excel...', 'success');
-      // In a real application, this would generate and download an Excel file
-    }
+                    // Page buttons
+                    for (let i = 1; i <= pageCount; i++) {
+                        const pageButton = document.createElement('button');
+                        pageButton.textContent = i;
+                        pageButton.classList.toggle('active', i === currentPage);
+                        pageButton.addEventListener('click', () => {
+                            currentPage = i;
+                            renderTable();
+                            setupPagination();
+                        });
+                        paginationEl.appendChild(pageButton);
+                    }
 
-    // Export to PDF (placeholder function)
-    function exportToPDF() {
-      showNotification('Exporting to PDF...', 'success');
-      // In a real application, this would generate and download a PDF file
-    }
+                    // Next button
+                    const nextButton = document.createElement('button');
+                    nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                    nextButton.disabled = currentPage === pageCount;
+                    nextButton.addEventListener('click', () => {
+                        if (currentPage < pageCount) {
+                            currentPage++;
+                            renderTable();
+                            setupPagination();
+                        }
+                    });
+                    paginationEl.appendChild(nextButton);
+                }
 
-    // Show notification
-    function showNotification(message, type) {
-      notification.textContent = message;
-      notification.className = 'notification ' + type;
-      
-      setTimeout(() => {
-        notification.className = 'notification';
-      }, 3000);
-    }
+                // Filter data based on search and filter criteria
+                function filterData() {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const filterValue = filterSelect.value;
 
-    // Initialize the application
-    init();
-  </script>
+                    filteredData = existingPartyCodes.filter(party => {
+                        // Apply search filter
+                        const matchesSearch = searchTerm === '' ||
+                            party.party_master_code.toLowerCase().includes(searchTerm) ||
+                            (party.party_name && party.party_name.toLowerCase().includes(searchTerm)) ||
+                            party.phone.includes(searchTerm);
+
+                        // Apply type filter
+                        let matchesFilter = true;
+                        if (filterValue === 'D-P') {
+                            matchesFilter = party.party_master_code.startsWith('D-P');
+                        } else if (filterValue === 'P') {
+                            matchesFilter = party.party_master_code.startsWith('P') && !party.party_master_code.startsWith('D-P');
+                        }
+
+                        return matchesSearch && matchesFilter;
+                    });
+
+                    // Reset to first page when filtering
+                    currentPage = 1;
+
+                    // Update UI
+                    updateStats();
+                    renderTable();
+                    setupPagination();
+                }
+
+                // Sort data by specified field
+                function sortData(field) {
+                    if (sortField === field) {
+                        // Toggle sort direction if same field
+                        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        // Default to ascending when changing field
+                        sortField = field;
+                        sortDirection = 'asc';
+                    }
+
+                    filteredData.sort((a, b) => {
+                        let valueA, valueB;
+
+                        switch (field) {
+                            case 'code':
+                                valueA = a.party_master_code;
+                                valueB = b.party_master_code;
+                                break;
+                            case 'name':
+                                valueA = a.party_name || '';
+                                valueB = b.party_name || '';
+                                break;
+                            case 'phone':
+                                valueA = a.phone;
+                                valueB = b.phone;
+                                break;
+                            default:
+                                valueA = a.party_master_code;
+                                valueB = b.party_master_code;
+                        }
+
+                        // Compare values
+                        if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
+                        if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
+                        return 0;
+                    });
+
+                    renderTable();
+                }
+
+                // Set up event listeners
+                function setupEventListeners() {
+                    searchInput.addEventListener('input', filterData);
+                    filterSelect.addEventListener('change', filterData);
+                    refreshBtn.addEventListener('click', () => {
+                        searchInput.value = '';
+                        filterSelect.value = 'all';
+                        filterData();
+                        showNotification('Data refreshed successfully', 'success');
+                    });
+
+                    // Table header sorting
+                    document.querySelectorAll('th[data-sort]').forEach(header => {
+                        header.addEventListener('click', () => {
+                            const field = header.getAttribute('data-sort');
+                            sortData(field);
+                        });
+                    });
+
+                    // Export buttons
+                    //exportExcelBtn.addEventListener('click', exportToExcel);
+                    //exportPdfBtn.addEventListener('click', exportToPDF);
+                }
+
+                // Edit party details (placeholder function)
+                function editParty(partyCode) {
+                    showNotification(`Editing for ${partyCode}`, 'success');
+                    // In a real application, this would navigate to a detail page or show a modal
+                }
+
+                // Export to Excel (placeholder function)
+                function exportToExcel() {
+                    showNotification('Exporting to Excel...', 'success');
+                    // In a real application, this would generate and download an Excel file
+                }
+
+                // Export to PDF (placeholder function)
+                function exportToPDF() {
+                    showNotification('Exporting to PDF...', 'success');
+                    // In a real application, this would generate and download a PDF file
+                }
+
+                // Show notification
+                function showNotification(message, type) {
+                    notification.textContent = message;
+                    notification.className = 'notification ' + type;
+
+                    setTimeout(() => {
+                        notification.className = 'notification';
+                    }, 3000);
+                }
+
+                // Initialize the application
+                init();
+            </script>
+
+
+        </div> <!-- #end main-container -->
+
+
+        <!-- theme settings -->
+        <div class="site-settings clearfix hidden-xs">
+            <div class="settings clearfix">
+                <div class="trigger ion ion-settings left"></div>
+                <div class="wrapper left">
+                    <ul class="list-unstyled other-settings">
+                        <li class="clearfix mb10">
+                            <div class="left small">Nav Horizontal</div>
+                            <div class="md-switch right">
+                                <label>
+                                    <input type="checkbox" id="navHorizontal">
+                                    <span>&nbsp;</span>
+                                </label>
+                            </div>
+
+
+                        </li>
+                        <li class="clearfix mb10">
+                            <div class="left small">Fixed Header</div>
+                            <div class="md-switch right">
+                                <label>
+                                    <input type="checkbox" id="fixedHeader">
+                                    <span>&nbsp;</span>
+                                </label>
+                            </div>
+                        </li>
+                        <li class="clearfix mb10">
+                            <div class="left small">Nav Full</div>
+                            <div class="md-switch right">
+                                <label>
+                                    <input type="checkbox" id="navFull">
+                                    <span>&nbsp;</span>
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+                    <hr />
+                    <ul class="themes list-unstyled" id="themeColor">
+                        <li data-theme="theme-zero" class="active"></li>
+                        <li data-theme="theme-one"></li>
+                        <li data-theme="theme-two"></li>
+                        <li data-theme="theme-three"></li>
+                        <li data-theme="theme-four"></li>
+                        <li data-theme="theme-five"></li>
+                        <li data-theme="theme-six"></li>
+                        <li data-theme="theme-seven"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- #end theme settings -->
+
+
+
+
+        <!-- Dev only -->
+        <!-- Vendors -->
+
+        {% load static %}
+
+
+
+        <script src="{% static 'scripts/vendors.js' %}"></script>
+
+
+        <script src="{% static 'scripts/plugins/screenfull.js' %}"></script>
+        <script src="{% static 'scripts/plugins/perfect-scrollbar.min.js' %}"></script>
+        <script src="{% static 'scripts/plugins/waves.min.js' %}"></script>
+        <script src="{% static 'scripts/plugins/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'scripts/app.js' %}"></script>
+        {% comment %}
+        <script src="{% static 'scripts/tables.init.js' %}"></script> {% endcomment %}
+
+
+
 </body>
+
 </html>

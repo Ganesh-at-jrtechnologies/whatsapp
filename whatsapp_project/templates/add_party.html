@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	{% load static %}
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="description" content="Materia - Admin Template">
+	<meta name="keywords" content="materia, webapp, admin, dashboard, template, ui">
+	<meta name="author" content="solutionportal">
+	<!-- <base href="/"> -->
+
+	<title>Upload Party Master Sheet</title>
+
+	<link rel="icon" type="image/x-icon" href="{% static 'images/ksb_logo.png' %}">
+
+	<!-- Icons -->
+	<link rel="stylesheet" href="{% static 'fonts/ionicons/css/ionicons.min.css' %}">
+	<link rel="stylesheet" href="{% static 'fonts/font-awesome/css/font-awesome.min.css' %}">
+
+	<!-- Plugins -->
+	<link rel="stylesheet" href="{% static 'styles/plugins/waves.css' %}">
+	<link rel="stylesheet" href="{% static 'styles/plugins/perfect-scrollbar.css' %}">
+
+	<!-- CSS Stylesheets -->
+	<link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'styles/main.min.css' %}">
+
+
+
+
+
+
+	<link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+	<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css'>
+
+	<!-- Match Media polyfill for IE9 -->
+	<!--[if IE 9]> <script src="scripts/ie/matchMedia.js"></script>  <![endif]-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+	<style>
+		:root {
+			--primary: #4361ee;
+			--secondary: #3f37c9;
+			--success: #4cc9f0;
+			--danger: #f72585;
+			--warning: #f8961e;
+			--light: #f8f9fa;
+			--dark: #212529;
+			--gray: #6c757d;
+			--light-gray: #e9ecef;
+		}
+
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+
+		body {
+			background-color: #f5f7fb;
+			color: var(--dark);
+			line-height: 1.6;
+
+				{
+				% comment %
+			}
+
+
+
+				{
+				% endcomment %
+			}
+
+			min-height: 100vh;
+		}
+
+		.container {
+			max-width: 900px;
+			margin: 0 auto;
+			padding: 20px;
+		}
+
+		header {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		h1 {
+			color: var(--primary);
+			margin-bottom: 10px;
+			font-size: 2.2rem;
+		}
+
+		.subtitle {
+			color: var(--gray);
+			font-size: 1rem;
+			margin-bottom: 10px;
+		}
+
+		.card {
+			background: white;
+			border-radius: 12px;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+			padding: 25px;
+			margin-bottom: 25px;
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+		}
+
+		.card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+		}
+
+		.upload-area {
+			border: 2px dashed var(--light-gray);
+			border-radius: 8px;
+			padding: 30px;
+			text-align: center;
+			margin: 20px 0;
+			background-color: rgba(67, 97, 238, 0.05);
+			transition: all 0.3s;
+			cursor: pointer;
+		}
+
+		.upload-area.active {
+			border-color: var(--primary);
+			background-color: rgba(67, 97, 238, 0.1);
+		}
+
+		.upload-icon {
+			font-size: 3rem;
+			color: var(--primary);
+			margin-bottom: 15px;
+		}
+
+		.btn {
+			display: inline-block;
+			padding: 12px 24px;
+			background-color: var(--primary);
+			color: white;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			font-size: 1.5rem;
+			font-weight: 600;
+			transition: all 0.3s;
+			text-align: center;
+		}
+
+		.btn:hover {
+			background-color: var(--secondary);
+			transform: translateY(-2px);
+		}
+
+		.btn-success {
+			background-color: #4caf50;
+		}
+
+		.btn-success:hover {
+			background-color: #3d8b40;
+		}
+
+		.btn-danger {
+			background-color: var(--danger);
+		}
+
+		.btn-danger:hover {
+			background-color: #d11467;
+		}
+
+		.file-input {
+			display: none;
+		}
+
+		.file-info {
+			margin-top: 15px;
+			font-size: 1.5rem;
+			color: var(--gray);
+		}
+
+		.progress-bar {
+			height: 6px;
+			background: var(--light-gray);
+			border-radius: 3px;
+			overflow: hidden;
+			margin: 15px 0;
+			display: none;
+		}
+
+		.progress {
+			height: 100%;
+			background: var(--primary);
+			width: 0%;
+			transition: width 0.3s;
+		}
+
+		.notification {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			padding: 15px 20px;
+			border-radius: 8px;
+			color: white;
+			opacity: 0;
+			transform: translateY(100px);
+			transition: all 0.3s;
+			z-index: 1001;
+			max-width: 350px;
+		}
+
+		.notification.success {
+			background: #4caf50;
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		.notification.error {
+			background: var(--danger);
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		.stats-container {
+			display: flex;
+			justify-content: space-around;
+			flex-wrap: wrap;
+			margin: 20px 0;
+			display: none;
+		}
+
+		.stat-box {
+			background: white;
+			border-radius: 8px;
+			padding: 15px;
+			margin: 10px;
+			text-align: center;
+			min-width: 150px;
+			box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+		}
+
+		.stat-value {
+			font-size: 1.8rem;
+			font-weight: bold;
+			color: var(--primary);
+		}
+
+		.stat-label {
+			color: var(--gray);
+			font-size: 0.9rem;
+		}
+
+		.requirements {
+			background-color: #fff8e1;
+			border-left: 4px solid var(--warning);
+			padding: 15px;
+			margin: 20px 0;
+			border-radius: 4px;
+		}
+
+		.requirements h3 {
+			color: var(--warning);
+			margin-bottom: 10px;
+		}
+
+		.requirements ul {
+			padding-left: 20px;
+		}
+
+		.requirements li {
+			margin-bottom: 5px;
+		}
+
+		.duplicates-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.7);
+			z-index: 1000;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.modal-content {
+			background-color: white;
+			border-radius: 12px;
+			padding: 25px;
+			width: 90%;
+			max-width: 600px;
+			max-height: 80vh;
+			overflow-y: auto;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+		}
+
+		.modal-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 20px;
+			border-bottom: 1px solid var(--light-gray);
+			padding-bottom: 15px;
+		}
+
+		.modal-title {
+			font-size: 1.5rem;
+			color: var(--danger);
+		}
+
+		.close-btn {
+			background: none;
+			border: none;
+			font-size: 1.5rem;
+			cursor: pointer;
+			color: var(--gray);
+		}
+
+		.duplicates-list {
+			list-style-type: none;
+			margin: 15px 0;
+		}
+
+		.duplicates-list li {
+			padding: 10px;
+			border-bottom: 1px solid var(--light-gray);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.duplicates-list li:last-child {
+			border-bottom: none;
+		}
+
+		.duplicate-code {
+			font-weight: bold;
+			color: var(--danger);
+		}
+
+		.modal-actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 10px;
+			margin-top: 20px;
+		}
+
+		@media (max-width: 768px) {
+			.stats-container {
+				flex-direction: column;
+			}
+
+			.stat-box {
+				width: 100%;
+			}
+
+			.btn {
+				width: 100%;
+				margin-bottom: 10px;
+			}
+
+			.modal-actions {
+				flex-direction: column;
+			}
+		}
+	</style>
+
+
+</head>
+
+
+
+
+
+<body id="app" class="app off-canvas">
+
+	<!-- header -->
+	{% include "includes/header.html" %}
+	<!-- #end header -->
+
+	<!-- main-container -->
+	<div class="main-container clearfix">
+		<!-- main-navigation -->
+		{% include "includes/side_navbar.html" %}
+		<!-- #end main-navigation -->
+
+		<div class="content-container fixedHeader nav-expand">
+			<div class="container">
+				<header>
+					<h1 style="font-size: 36px;"><i class="fas fa-file-upload"></i> Upload Party Master Sheet</h1>
+					<p class="subtitle" style="font-size: 15px;">Upload your Excel file with party information</p>
+				</header>
+
+				<div class="card">
+					<div class="requirements">
+						<h3><i class="fas fa-info-circle"></i>File Requirements</h3>
+						<ul>
+							<li>Supported formats: .xlsx, .xls, .csv</li>
+							<li>Required columns: Sr No, HUL Code, Party Master Code, Party Name, Beat, Address</li>
+							<li>Phone numbers will be extracted from the Address field</li>
+							<li>Duplicate rows will be automatically removed</li>
+							<li>Existing Party Master Codes will be listed for review</li>
+						</ul>
+					</div>
+
+					<form id="uploadForm">
+						<div class="upload-area" id="dropZone">
+							<div class="upload-icon">
+								<i class="fas fa-cloud-upload-alt"></i>
+							</div>
+							<p style="font-size: 20px;">Drag & drop your file here or click to browse</p>
+							<input type="file" id="sheetFile" class="file-input" style="display: none;"
+								accept=".xlsx,.xls,.csv" required />
+							<button type="button" class="btn" id="browseBtn">Browse Files</button>
+							<div class="file-info" id="fileInfo">No file selected</div>
+						</div>
+
+						<div class="progress-bar" id="progressContainer">
+							<div class="progress" id="progressBar"></div>
+						</div>
+
+						<button type="submit" class="btn" id="uploadBtn">
+							<i class="fas fa-upload"></i> Upload File
+						</button>
+					</form>
+
+					<div class="stats-container" id="statsContainer">
+						<div class="stat-box">
+							<div class="stat-value" id="totalRows">0</div>
+							<div class="stat-label">Total Rows</div>
+						</div>
+						<div class="stat-box">
+							<div class="stat-value" id="uniqueRows">0</div>
+							<div class="stat-label">Unique Rows</div>
+						</div>
+						<div class="stat-box">
+							<div class="stat-value" id="duplicateRows">0</div>
+							<div class="stat-label">Duplicates Removed</div>
+						</div>
+						<div class="stat-box">
+							<div class="stat-value" id="existingCodes">0</div>
+							<div class="stat-label">Existing Codes</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="notification" id="notification"></div>
+
+			<div class="duplicates-modal" id="duplicatesModal">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Existing Party Master Codes
+						</h3>
+						<button class="close-btn" id="closeModal">&times;</button>
+					</div>
+					<p>The following Party Master Codes already exist in the system and cannot be uploaded:</p>
+					<ul class="duplicates-list" id="duplicatesList">
+						<!-- Duplicate codes will be listed here -->
+					</ul>
+					<div class="modal-actions">
+						<button class="btn btn-danger" id="cancelUpload">Cancel Upload</button>
+						<button class="btn btn-success" id="proceedUpload">Upload Valid Records</button>
+					</div>
+				</div>
+			</div>
+
+			<script>
+				// Inject Django context list into JS
+				const existingPartyCodes = {{ party_codes_list| safe }};
+
+				const requiredColumns = ["Sr No", "HUL Code", "Party Master Code", "Party Name", "Beat", "Address"];
+
+				// DOM elements
+				const dropZone = document.getElementById('dropZone');
+				const browseBtn = document.getElementById('browseBtn');
+				const fileInput = document.getElementById('sheetFile');
+				const fileInfo = document.getElementById('fileInfo');
+				const uploadForm = document.getElementById('uploadForm');
+				const progressContainer = document.getElementById('progressContainer');
+				const progressBar = document.getElementById('progressBar');
+				const statsContainer = document.getElementById('statsContainer');
+				const totalRowsEl = document.getElementById('totalRows');
+				const uniqueRowsEl = document.getElementById('uniqueRows');
+				const duplicateRowsEl = document.getElementById('duplicateRows');
+				const existingCodesEl = document.getElementById('existingCodes');
+				const notification = document.getElementById('notification');
+				const uploadBtn = document.getElementById('uploadBtn');
+				const duplicatesModal = document.getElementById('duplicatesModal');
+				const duplicatesList = document.getElementById('duplicatesList');
+				const closeModal = document.getElementById('closeModal');
+				const cancelUpload = document.getElementById('cancelUpload');
+				const proceedUpload = document.getElementById('proceedUpload');
+
+				// Variables to store processing data
+				let processedData = {
+					rows: [],
+					uniqueRows: [],
+					duplicates: 0,
+					existingCodes: []
+				};
+
+				// Event listeners
+				browseBtn.addEventListener('click', () => fileInput.click());
+
+				fileInput.addEventListener('change', (e) => {
+					if (e.target.files.length > 0) {
+						fileInfo.innerHTML = `<i class="fas fa-file"></i> Selected file: ${e.target.files[0].name}`;
+						fileInfo.style.color = 'var(--primary)';
+					} else {
+						fileInfo.textContent = 'No file selected';
+						fileInfo.style.color = 'var(--gray)';
+					}
+				});
+
+				// Drag and drop functionality
+				['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+					dropZone.addEventListener(eventName, preventDefaults, false);
+				});
+
+				function preventDefaults(e) {
+					e.preventDefault();
+					e.stopPropagation();
+				}
+
+				['dragenter', 'dragover'].forEach(eventName => {
+					dropZone.addEventListener(eventName, highlight, false);
+				});
+
+				['dragleave', 'drop'].forEach(eventName => {
+					dropZone.addEventListener(eventName, unhighlight, false);
+				});
+
+				function highlight() {
+					dropZone.classList.add('active');
+				}
+
+				function unhighlight() {
+					dropZone.classList.remove('active');
+				}
+
+				dropZone.addEventListener('drop', handleDrop, false);
+
+				function handleDrop(e) {
+					const dt = e.dataTransfer;
+					const files = dt.files;
+
+					if (files.length > 0) {
+						fileInput.files = files;
+						fileInfo.innerHTML = `<i class="fas fa-file"></i> Selected file: ${files[0].name}`;
+						fileInfo.style.color = 'var(--primary)';
+					}
+				}
+
+				// Modal event listeners
+				closeModal.addEventListener('click', () => {
+					duplicatesModal.style.display = 'none';
+				});
+
+				cancelUpload.addEventListener('click', () => {
+					duplicatesModal.style.display = 'none';
+					resetForm();
+				});
+
+				proceedUpload.addEventListener('click', () => {
+					duplicatesModal.style.display = 'none';
+					uploadValidRecords();
+				});
+
+				// Form submission
+				uploadForm.addEventListener('submit', function (e) {
+					e.preventDefault();
+					const file = fileInput.files[0];
+
+					if (!file) {
+						showNotification('Please select a file first.', 'error');
+						return;
+					}
+
+					// Show progress
+					progressContainer.style.display = 'block';
+					progressBar.style.width = '30%';
+					uploadBtn.disabled = true;
+					uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+					const reader = new FileReader();
+					reader.onload = function (event) {
+						try {
+							progressBar.style.width = '60%';
+
+							const data = new Uint8Array(event.target.result);
+							const workbook = XLSX.read(data, { type: "array" });
+							const sheetName = workbook.SheetNames[0];
+							const sheet = workbook.Sheets[sheetName];
+
+							// Step 1: Read raw sheet as array of rows
+							const sheetData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+
+							// Step 2: Find the actual header row
+							let headerRowIndex = sheetData.findIndex(row =>
+								requiredColumns.every(col => row.includes(col))
+							);
+
+							if (headerRowIndex === -1) {
+								showNotification('Could not find header row with required columns.', 'error');
+								resetForm();
+								return;
+							}
+
+							// Step 3: Convert from that row onwards
+							let rows = XLSX.utils.sheet_to_json(sheet, { range: headerRowIndex, defval: "" });
+
+							if (rows.length === 0) {
+								showNotification('The sheet is empty.', 'error');
+								resetForm();
+								return;
+							}
+
+							// ✅ Extract Phone from Address
+							function extractPhone(address) {
+								const match = String(address).match(/PH\s*:\s*(\d{10})/i);
+								return match ? match[1] : "";
+							}
+
+							// ✅ Normalize row for duplicate check
+							function normalizeRow(row) {
+								return {
+									Sr_No: String(row["Sr No"]).trim(),
+									HUL_Code: String(row["HUL Code"]).trim(),
+									Party_Master_Code: String(row["Party Master Code"]).trim(),
+									Party_Name: String(row["Party Name"]).trim().toLowerCase(),
+									Beat: String(row["Beat"]).trim().toLowerCase(),
+									Address: String(row["Address"]).trim().toLowerCase(),
+									Phone: extractPhone(row["Address"])
+								};
+							}
+
+							const seen = new Set();
+							let uniqueRows = [];
+							let duplicates = 0;
+							let existingCodes = [];
+
+							rows.forEach(row => {
+								const normalized = normalizeRow(row);
+								const key = JSON.stringify(normalized);
+
+								// ✅ Check if Party Master Code already exists in DB
+								if (existingPartyCodes.includes(normalized.Party_Master_Code)) {
+									// Collect existing codes instead of stopping
+									if (!existingCodes.includes(normalized.Party_Master_Code)) {
+										existingCodes.push(normalized.Party_Master_Code);
+									}
+									return; // Skip this row
+								}
+
+								if (seen.has(key)) {
+									duplicates++;
+								} else {
+									seen.add(key);
+									uniqueRows.push({ ...row, Phone: normalized.Phone });
+								}
+							});
+
+							// Store processed data for potential upload
+							processedData.rows = rows;
+							processedData.uniqueRows = uniqueRows;
+							processedData.duplicates = duplicates;
+							processedData.existingCodes = existingCodes;
+
+							// Update stats
+							totalRowsEl.textContent = rows.length;
+							uniqueRowsEl.textContent = uniqueRows.length;
+							duplicateRowsEl.textContent = duplicates;
+							existingCodesEl.textContent = existingCodes.length;
+							statsContainer.style.display = 'flex';
+
+							// Show existing codes modal if any duplicates found
+							if (existingCodes.length > 0) {
+								showExistingCodesModal(existingCodes);
+								progressBar.style.width = '0%';
+								progressContainer.style.display = 'none';
+								uploadBtn.disabled = false;
+								uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
+								return;
+							}
+
+							// If no existing codes, proceed with upload
+							completeUpload();
+						} catch (err) {
+							showNotification('Error processing file: ' + err.message, 'error');
+							resetForm();
+						}
+					};
+
+					reader.readAsArrayBuffer(file);
+				});
+
+				// Show modal with existing codes
+				function showExistingCodesModal(codes) {
+					duplicatesList.innerHTML = '';
+					codes.forEach(code => {
+						const li = document.createElement('li');
+						li.innerHTML = `<span class="duplicate-code">${code}</span>`;
+						duplicatesList.appendChild(li);
+					});
+					duplicatesModal.style.display = 'flex';
+				}
+
+				// Upload only valid records (without existing codes)
+				function uploadValidRecords() {
+					progressContainer.style.display = 'block';
+					progressBar.style.width = '80%';
+					uploadBtn.disabled = true;
+					uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+					showNotification(`Found ${processedData.existingCodes.length} existing codes. Uploading ${processedData.uniqueRows.length} valid records.`, 'success');
+
+					// ✅ Send to backend
+					fetch(window.location.href, {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(processedData.uniqueRows),
+					})
+						.then(res => {
+							if (!res.ok) throw new Error("Failed to upload data");
+							return res.json();
+						})
+						.then(data => {
+							showNotification("Upload successful! " + processedData.existingCodes.length + " records skipped due to existing codes.", 'success');
+							console.log("Server Response:", data);
+
+							// Complete progress
+							progressBar.style.width = '100%';
+
+							// Reset after successful upload
+							setTimeout(() => {
+								resetForm();
+							}, 2000);
+						})
+						.catch(err => {
+							showNotification("Error while uploading: " + err.message, 'error');
+							resetForm();
+						});
+				}
+
+				// Complete upload process
+				function completeUpload() {
+					progressBar.style.width = '80%';
+					uploadBtn.disabled = true;
+					uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+					showNotification(`Processing complete: ${processedData.rows.length} rows, ${processedData.uniqueRows.length} unique, ${processedData.duplicates} duplicates removed`, 'success');
+
+					// ✅ Send to backend
+					fetch(window.location.href, {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(processedData.uniqueRows),
+					})
+						.then(res => {
+							if (!res.ok) throw new Error("Failed to upload data");
+							return res.json();
+						})
+						.then(data => {
+							showNotification("Upload successful!", 'success');
+							console.log("Server Response:", data);
+
+							// Complete progress
+							progressBar.style.width = '100%';
+
+							// Reset after successful upload
+							setTimeout(() => {
+								resetForm();
+							}, 2000);
+						})
+						.catch(err => {
+							showNotification("Error while uploading: " + err.message, 'error');
+							resetForm();
+						});
+				}
+
+				// Reset form to initial state
+				function resetForm() {
+					fileInput.value = "";
+					fileInfo.textContent = 'No file selected';
+					fileInfo.style.color = 'var(--gray)';
+					progressBar.style.width = '0%';
+					progressContainer.style.display = 'none';
+					uploadBtn.disabled = false;
+					uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
+					statsContainer.style.display = 'none';
+
+					// Reset processed data
+					processedData = {
+						rows: [],
+						uniqueRows: [],
+						duplicates: 0,
+						existingCodes: []
+					};
+				}
+
+				// Notification function
+				function showNotification(message, type) {
+					notification.textContent = message;
+					notification.className = 'notification ' + type;
+
+					setTimeout(() => {
+						notification.className = 'notification';
+					}, 5000);
+				}
+			</script>
+		</div> <!-- #end main-container -->
+
+
+		<!-- theme settings -->
+		<div class="site-settings clearfix hidden-xs">
+			<div class="settings clearfix">
+				<div class="trigger ion ion-settings left"></div>
+				<div class="wrapper left">
+					<ul class="list-unstyled other-settings">
+						<li class="clearfix mb10">
+							<div class="left small">Nav Horizontal</div>
+							<div class="md-switch right">
+								<label>
+									<input type="checkbox" id="navHorizontal">
+									<span>&nbsp;</span>
+								</label>
+							</div>
+
+
+						</li>
+						<li class="clearfix mb10">
+							<div class="left small">Fixed Header</div>
+							<div class="md-switch right">
+								<label>
+									<input type="checkbox" id="fixedHeader">
+									<span>&nbsp;</span>
+								</label>
+							</div>
+						</li>
+						<li class="clearfix mb10">
+							<div class="left small">Nav Full</div>
+							<div class="md-switch right">
+								<label>
+									<input type="checkbox" id="navFull">
+									<span>&nbsp;</span>
+								</label>
+							</div>
+						</li>
+					</ul>
+					<hr />
+					<ul class="themes list-unstyled" id="themeColor">
+						<li data-theme="theme-zero" class="active"></li>
+						<li data-theme="theme-one"></li>
+						<li data-theme="theme-two"></li>
+						<li data-theme="theme-three"></li>
+						<li data-theme="theme-four"></li>
+						<li data-theme="theme-five"></li>
+						<li data-theme="theme-six"></li>
+						<li data-theme="theme-seven"></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- #end theme settings -->
+
+
+
+
+		<!-- Dev only -->
+		<!-- Vendors -->
+
+		{% load static %}
+
+
+
+		<script src="{% static 'scripts/vendors.js' %}"></script>
+
+
+		<script src="{% static 'scripts/plugins/screenfull.js' %}"></script>
+		<script src="{% static 'scripts/plugins/perfect-scrollbar.min.js' %}"></script>
+		<script src="{% static 'scripts/plugins/waves.min.js' %}"></script>
+		<script src="{% static 'scripts/plugins/jquery.dataTables.min.js' %}"></script>
+		<script src="{% static 'scripts/app.js' %}"></script>
+		{% comment %}
+		<script src="{% static 'scripts/tables.init.js' %}"></script> {% endcomment %}
+
+
+
+</body>
+
+</html>

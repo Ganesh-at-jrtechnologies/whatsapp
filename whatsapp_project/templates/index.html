@@ -1,119 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-  <meta charset="UTF-8">
-  <title>Upload Vendor Sheet</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+ 	{% load static %}
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="description" content="Materia - Admin Template">
+	<meta name="keywords" content="materia, webapp, admin, dashboard, template, ui">
+	<meta name="author" content="solutionportal">
+	<!-- <base href="/"> -->
+
+	<title>JR</title>
+
+	<link rel="icon" type="image/x-icon" href="{% static 'images/ksb_logo.png' %}">
+
+	<!-- Icons -->
+	<link rel="stylesheet" href="{% static 'fonts/ionicons/css/ionicons.min.css' %}">
+	<link rel="stylesheet" href="{% static 'fonts/font-awesome/css/font-awesome.min.css' %}">
+
+	<!-- Plugins -->
+	<link rel="stylesheet" href="{% static 'styles/plugins/waves.css' %}">
+	<link rel="stylesheet" href="{% static 'styles/plugins/perfect-scrollbar.css' %}">
+
+	<!-- CSS Stylesheets -->
+	<link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'styles/main.min.css' %}">
+
+
+
+
+
+
+	<link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+	<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css'>
+
+	<!-- Match Media polyfill for IE9 -->
+	<!--[if IE 9]> <script src="scripts/ie/matchMedia.js"></script>  <![endif]-->
+
+
 </head>
-<body>
-  <h2>Upload Vendor Sheet</h2>
-  <form id="uploadForm">
-    <input type="file" id="sheetFile" accept=".xlsx,.xls,.csv" required />
-    <button type="submit">Upload</button>
-  </form>
+<style>
+    .welcome-box {
+        padding: 50px;
+        text-align: center;
+        background: linear-gradient(135deg,rgb(75, 126, 45),rgb(104, 117, 107));
+        color: white;
+        border-radius: 20px;
+        margin: 50px auto;
+        max-width: 600px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        animation: fadeIn 1.5s ease-in-out;
+    }
 
-  <script>
-    const requiredColumns = [
-      "Vendor_Id",
-      "Vendor_Name",
-      "Phone",
-      "Bill_Id",
-      "Bill_Amount",
-      "Pending_Amount"
-    ];
-
-    document.getElementById("uploadForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const fileInput = document.getElementById("sheetFile");
-      const file = fileInput.files[0];
-
-      if (!file) {
-        alert("Please upload a file.");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const data = new Uint8Array(event.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-
-        // Convert to JSON array
-        let rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-
-        if (rows.length === 0) {
-          alert("The sheet is empty.");
-          fileInput.value = "";
-          return;
-        }
-
-        // Validate required columns
-        const headers = Object.keys(rows[0]);
-        const missing = requiredColumns.filter(col => !headers.includes(col));
-
-        if (missing.length > 0) {
-          alert(`The uploaded file is missing required columns: ${missing.join(", ")}`);
-          fileInput.value = "";
-          return;
-        }
-
-        // ✅ Normalize row data for duplicate checking
-        function normalizeRow(row) {
-          return {
-            Vendor_Id: String(row.Vendor_Id).trim(),
-            Vendor_Name: String(row.Vendor_Name).trim().toLowerCase(), // case-insensitive
-            Phone: String(row.Phone).trim(),
-            Bill_Id: String(row.Bill_Id).trim(),
-            Bill_Amount: String(row.Bill_Amount).trim(),
-            Pending_Amount: String(row.Pending_Amount).trim()
-          };
-        }
-
-        const seen = new Set();
-        let uniqueRows = [];
-        let duplicates = 0;
-
-        rows.forEach(row => {
-          const normalized = normalizeRow(row);
-          const key = JSON.stringify(normalized);
-
-          if (seen.has(key)) {
-            duplicates++;
-          } else {
-            seen.add(key);
-            uniqueRows.push(row); // keep original row for sending
-          }
-        });
-
-        // Show message about duplicates removed
-        alert(
-          `Total Rows: ${rows.length}\nUnique Rows: ${uniqueRows.length}\nDuplicates Removed: ${duplicates}`
-        );
-
-        // Send JSON to backend
-        fetch(window.location.href, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(uniqueRows),
-        })
-          .then(res => {
-            if (!res.ok) throw new Error("Failed to upload data");
-            return res.json();
-          })
-          .then(data => {
-            alert("Upload successful!");
-            console.log("Server Response:", data);
-          })
-          .catch(err => {
-            alert("Error while uploading: " + err.message);
-          });
-      };
-
-      reader.readAsArrayBuffer(file);
-    });
-  </script>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 
 
+
+
+<body id="app" class="app off-canvas">
+
+	<!-- header -->
+	{% include "includes/header.html" %}
+	<!-- #end header -->
+
+	<!-- main-container -->
+	<div class="main-container clearfix">
+		<!-- main-navigation -->
+			{% include "includes/side_navbar.html" %}
+		<!-- #end main-navigation -->
+
+		<div class="content-container fixedHeader nav-expand">
+			<!-- Data Table -->
+			
+			<div class="welcome-box">
+				<h1 style="font-size: 3.5rem;">Welcome <span style="color: #FFD700;">Collection App</span></h1>
+				<p style="font-size: 1.2rem;">Your one-stop solution for party collection management and outstanding management</p>
+			</div>
+
+
+			<!-- content-here -->
+			<div class="content-container" id="content">
+				<!-- dashboard page -->
+				<div class="page page-dashboard">
+
+					<div class="page-wrap">
+
+
+
+
+					</div> <!-- #end page-wrap -->
+				</div>
+				<!-- #end dashboard page -->
+			</div>
+
+
+		</div> <!-- #end main-container -->
+
+
+		<!-- theme settings -->
+		<div class="site-settings clearfix hidden-xs">
+			<div class="settings clearfix">
+				<div class="trigger ion ion-settings left"></div>
+				<div class="wrapper left">
+					<ul class="list-unstyled other-settings">
+						<li class="clearfix mb10">
+							<div class="left small">Nav Horizontal</div>
+							<div class="md-switch right">
+								<label>
+									<input type="checkbox" id="navHorizontal">
+									<span>&nbsp;</span>
+								</label>
+							</div>
+
+
+						</li>
+						<li class="clearfix mb10">
+							<div class="left small">Fixed Header</div>
+							<div class="md-switch right">
+								<label>
+									<input type="checkbox" id="fixedHeader">
+									<span>&nbsp;</span>
+								</label>
+							</div>
+						</li>
+						<li class="clearfix mb10">
+							<div class="left small">Nav Full</div>
+							<div class="md-switch right">
+								<label>
+									<input type="checkbox" id="navFull">
+									<span>&nbsp;</span>
+								</label>
+							</div>
+						</li>
+					</ul>
+					<hr />
+					<ul class="themes list-unstyled" id="themeColor">
+						<li data-theme="theme-zero" class="active"></li>
+						<li data-theme="theme-one"></li>
+						<li data-theme="theme-two"></li>
+						<li data-theme="theme-three"></li>
+						<li data-theme="theme-four"></li>
+						<li data-theme="theme-five"></li>
+						<li data-theme="theme-six"></li>
+						<li data-theme="theme-seven"></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- #end theme settings -->
+
+
+
+
+		<!-- Dev only -->
+		<!-- Vendors -->
+
+		{% load static %}
+
+
+
+		<script src="{% static 'scripts/vendors.js' %}"></script>
+
+
+		<script src="{% static 'scripts/plugins/screenfull.js' %}"></script>
+		<script src="{% static 'scripts/plugins/perfect-scrollbar.min.js' %}"></script>
+		<script src="{% static 'scripts/plugins/waves.min.js' %}"></script>
+		<script src="{% static 'scripts/plugins/jquery.dataTables.min.js' %}"></script>
+		<script src="{% static 'scripts/app.js' %}"></script>
+		{% comment %}
+		<script src="{% static 'scripts/tables.init.js' %}"></script> {% endcomment %}
 </body>
+
 </html>

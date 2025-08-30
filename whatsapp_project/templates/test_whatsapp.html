@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Vendor Sheet</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+  <h2>Upload Vendor Sheet</h2>
+  <form id="uploadForm">
+    <input type="file" id="sheetFile" accept=".xlsx,.xls,.csv" required />
+    <button type="submit">Upload</button>
+  </form>
+
+  <script>
+    const requiredColumns = [
+      "Vendor_Id",
+      "Vendor_Name",
+      "Phone",
+      "Bill_Id",
+      "Bill_Amount",
+      "Pending_Amount"
+    ];
+
+    document.getElementById("uploadForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const fileInput = document.getElementById("sheetFile");
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert("Please upload a file.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+
+        // Convert to JSON array
+        let rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+        if (rows.length === 0) {
+          alert("The sheet is empty.");
+          fileInput.value = "";
+          return;
+        }
+
+        // Validate required columns
+        const headers = Object.keys(rows[0]);
+        const missing = requiredColumns.filter(col => !headers.includes(col));
+
+        if (missing.length > 0) {
+          alert(`The uploaded file is missing required columns: ${missing.join(", ")}`);
+          fileInput.value = "";
+          return;
+        }
+
+        // ✅ Normalize row data for duplicate checking
+        function normalizeRow(row) {
+          return {
+            Vendor_Id: String(row.Vendor_Id).trim(),
+            Vendor_Name: String(row.Vendor_Name).trim().toLowerCase(), // case-insensitive
+            Phone: String(row.Phone).trim(),
+            Bill_Id: String(row.Bill_Id).trim(),
+            Bill_Amount: String(row.Bill_Amount).trim(),
+            Pending_Amount: String(row.Pending_Amount).trim()
+          };
+        }
+
+        const seen = new Set();
+        let uniqueRows = [];
+        let duplicates = 0;
+
+        rows.forEach(row => {
+          const normalized = normalizeRow(row);
+          const key = JSON.stringify(normalized);
+
+          if (seen.has(key)) {
+            duplicates++;
+          } else {
+            seen.add(key);
+            uniqueRows.push(row); // keep original row for sending
+          }
+        });
+
+        // Show message about duplicates removed
+        alert(
+          `Total Rows: ${rows.length}\nUnique Rows: ${uniqueRows.length}\nDuplicates Removed: ${duplicates}`
+        );
+
+        // Send JSON to backend
+        fetch(window.location.href, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(uniqueRows),
+        })
+          .then(res => {
+            if (!res.ok) throw new Error("Failed to upload data");
+            return res.json();
+          })
+          .then(data => {
+            alert("Upload successful!");
+            console.log("Server Response:", data);
+          })
+          .catch(err => {
+            alert("Error while uploading: " + err.message);
+          });
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
+  </script>
+
+
+</body>
+</html>

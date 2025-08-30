@@ -1,0 +1,60 @@
+{% load static %}
+<aside class="nav-wrap" id="site-nav" data-perfect-scrollbar>
+			<div class="nav-head">
+				<!-- site logo -->
+				<a class="site-logo text-uppercase">
+					{% comment %} <i class="ion ion-disc"></i> {% endcomment %}
+					<img src="{% static 'images/annai_logo.png' %}" alt="">
+					<span class="text">ANNAI</span>
+				</a>
+			</div>
+
+			<!-- Site nav (vertical) -->
+
+			<nav class="site-nav clearfix" role="navigation">
+
+
+				<!-- navigation -->
+				<ul class="list-unstyled clearfix nav-list mb15">
+					<li class="active">
+						<a href="{% url 'dashboard' %}">
+							<i class="ion ion-monitor"></i>
+							<span class="text">Dashboard</span>
+						</a>
+					</li>
+					{% comment %} <li>
+						<a>
+							<i class="icon ion-md-people"></i>
+							<span class="text">Customer Management</span>
+						</a>
+					</li> {% endcomment %}
+					<li>
+						<a href="javascript:;">
+							<i class="icon ion-md-people"></i>
+							<span class="text">Party Management</span>
+							{% comment %} <i class="icon ion-md-arrow"></i> {% endcomment %}
+						</a>
+						<ul class="inner-drop list-unstyled">
+							<li><a href="{% url 'party_master' %}">Add Party</a></li>
+							<li><a href="{% url 'list_party_master' %}">List Party</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<i class="icon ion-md-paper"></i>
+							<span class="text">O/S Management</span>
+							{% comment %} <i class="icon ion-md-arrow"></i> {% endcomment %}
+						</a>
+						<ul class="inner-drop list-unstyled">
+							<li><a href="{% url 'party_outstanding' %}">Upload Outstanding</a></li>
+							{% comment %} <li><a href="#">List Device</a></li> {% endcomment %}
+						</ul>
+					</li>
+					
+
+
+				</ul> <!-- #end navigation -->
+			</nav>
+
+
+		</aside>

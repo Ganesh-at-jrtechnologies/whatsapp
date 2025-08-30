@@ -41,7 +41,7 @@ INSTALLED_APPS = [
 ]
 
 # API Key for whatsapp messaging
-TEXTMEBOT_API_KEY = "HHcaM6o2K4Rq"
+TEXTMEBOT_API_KEY = "qZSSkryXkHtf"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -119,8 +119,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
-static_file = BASE_DIR/'static'
+# ✅ Static files for deployment
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
